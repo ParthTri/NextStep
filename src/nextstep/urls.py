@@ -1,5 +1,7 @@
 from django.urls import path
 
+from nextstep import views
+
 # Patterns
 #
-urlpatterns = []
+urlpatterns = [path("", views.dashboard, name="dashboard")]
