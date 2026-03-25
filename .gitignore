@@ -1,0 +1,22 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+staticfiles/
+
+# Virtual environments
+.venv
+
+# JS files
+node_modules/
+
+media/
+
+# Environment files
+.env
+
+# Application
+src/static/css/output.css
