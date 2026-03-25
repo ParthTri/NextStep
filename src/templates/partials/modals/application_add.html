@@ -1,0 +1,52 @@
+<dialog id="{{ modal_id }}" class="modal">
+	<div
+		class="modal-box border-2 border-black bg-white shadow-[4px_4px_0_0,8px_8px_0_0] p-0"
+	>
+		<div class="bg-yellow-300 p-3">
+			<div class="flex items-center justify-between">
+				<h3 class="font-bold text-xs/none uppercase">
+					Add Application
+				</h3>
+
+				<div class="flex gap-1">
+					<form method="dialog">
+						<button
+							class="size-8 border-2 border-black bg-white hover:cursor-pointer"
+						>
+							X
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="p-5">
+			<form action="POST">
+				<fieldset class="fieldset">
+					<legend class="fieldset-legend">
+						{{ application_form.role.label }}
+					</legend>
+					{{ application_form.role }}
+				</fieldset>
+
+				<fieldset class="fieldset">
+					<legend class="fieldset-legend">
+						{{ application_form.company.label }}
+					</legend>
+					{{ application_form.company }}
+				</fieldset>
+
+				<fieldset class="fieldset">
+					<legend class="fieldset-legend">
+						{{ application_form.applied_timestamp.label }}
+					</legend>
+					{{ application_form.applied_timestamp }}
+				</fieldset>
+
+				<div class="w-full flex justify-end-safe mt-3">
+					<button class="btn-neo">Save</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</dialog>
