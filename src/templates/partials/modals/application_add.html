@@ -21,7 +21,8 @@
 		</div>
 
 		<div class="p-5">
-			<form action="POST">
+			<form method="POST">
+				{% csrf_token %}
 				<fieldset class="fieldset">
 					<legend class="fieldset-legend">
 						{{ application_form.role.label }}
