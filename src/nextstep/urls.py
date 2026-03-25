@@ -4,4 +4,4 @@ from nextstep import views
 
 # Patterns
 #
-urlpatterns = [path("", views.dashboard, name="dashboard")]
+urlpatterns = [path("", views.Dashboard.as_view(), name="dashboard")]

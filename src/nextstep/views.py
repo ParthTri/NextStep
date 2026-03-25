@@ -1,15 +1,19 @@
 from django.http import HttpRequest
 from django.shortcuts import render
+from django.views import View
 
 from nextstep import forms, models
 
 
 # Create your views here.
-def dashboard(request: HttpRequest):
-    context = {}
+class Dashboard(View):
+    template_name = "dashboard.html"
 
-    application_form = forms.ApplicationForm()
+    def get(self, request: HttpRequest, *args, **kwargs):
+        context = {}
 
-    context["application_form"] = application_form
+        application_form = forms.ApplicationForm()
 
-    return render(request, "dashboard.html", context)
+        context["application_form"] = application_form
+
+        return render(request, self.template_name, context)
