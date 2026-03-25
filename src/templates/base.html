@@ -1,0 +1,24 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>{% block title %}{% endblock %}</title>
+
+		<link
+			rel="stylesheet"
+			href="{% static 'css/output.css' %}"
+			type="text/css"
+		/>
+
+		{% block html_head %} {% endblock %}
+	</head>
+	<body>
+		<header class="w-screen pt-5">{% include "partials/nav.html" %}</header>
+		<main class="sm:px-20 md:px-30 lg:px-40 mt-5">
+			{% block content %} {% endblock %}
+		</main>
+	</body>
+</html>
