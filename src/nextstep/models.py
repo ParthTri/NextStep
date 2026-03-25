@@ -24,6 +24,11 @@ class Application(models.Model):
 
     tags = models.ManyToManyField(Tag, through="ApplicationTag", related_name="tags")
 
+    def get_current_tag(self) -> Tag | None:
+        tags = ApplicationTag.objects.filter(application=self).order_by("-updated_at")
+
+        return tags.first().tag
+
 
 class ApplicationTag(models.Model):
     application = models.ForeignKey(Application, on_delete=models.CASCADE)
