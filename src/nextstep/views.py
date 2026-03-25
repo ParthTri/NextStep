@@ -1,5 +1,5 @@
 from django.http import HttpRequest
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import View
 
 from nextstep import forms, models
@@ -23,3 +23,15 @@ class Dashboard(View):
         context["application_form"] = application_form
 
         return render(request, self.template_name, context)
+
+    def post(self, request: HttpRequest, *args, **kwargs):
+
+        application_form = forms.ApplicationForm(request.POST)
+
+        if application_form.is_valid():
+            application = application_form.save()
+            tag = models.Tag.objects.get(name="Applied")
+            application.tags.add(tag)
+            application.save()
+
+            return redirect("dashboard")
