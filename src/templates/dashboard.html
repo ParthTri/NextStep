@@ -3,7 +3,12 @@
 {% block title %}Dashboard | NextStep{% endblock %}
 
 {% block content %}
-	<h1>Hello World</h1>
+	<section class="flex gap-5">
+		{% for application in applications %}
+			{% include "partials/application_card.html" %}
+		{% endfor %}
+	</section>
+
 	<div class="fab lg:mb-15 lg:mr-15">
 		<button
 			class="border-2 border-black bg-white px-5 py-3 font-semibold text-black shadow-[4px_4px_0_0] hover:translate-1 hover:shadow-none focus:ring-2 focus:ring-yellow-300 focus:outline-0"
