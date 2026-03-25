@@ -13,4 +13,4 @@ class Application(models.Model):
 
     applied_timestamp = models.DateTimeField(null=False, default=timezone.now)
 
-    job_description = models.TextField()
+    job_description = models.TextField(null=False, blank=True)
