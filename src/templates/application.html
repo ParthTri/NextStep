@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-	<section class="lg:px-30 grid grid-cols-[1fr_0.5fr]">
+	<section class="px-80 grid grid-cols-[1fr_0.5fr]">
 		<div>
 			<div class="flex justify-between align-center w-1/2">
 				<h1 class="text-4xl">{{ application.role }}</h1>
@@ -40,6 +40,8 @@
 				>
 			</div>
 		</div>
-		<div></div>
+		<div>
+			{% include 'partials/application_timeline.html' with tags=application_tags %}
+		</div>
 	</section>
 {% endblock %}

@@ -1,0 +1,32 @@
+<ul class="timeline timeline-vertical">
+	{% for tag in tags %}
+		<li>
+			{% if forloop.counter0 > 0 %}
+				<hr class="bg-black opacity-100 w-[3px]" />
+			{% endif %}
+
+			<div
+				class="timeline-start font-black uppercase text-xs tracking-widest opacity-60 py-8"
+			>
+				{{ tag.updated_at|date:"d M Y" }}
+			</div>
+
+			<div class="timeline-middle">
+				<div
+					class="w-3 h-3 bg-black border-2 border-black rotate-45"
+				></div>
+			</div>
+
+			<div class="timeline-end py-8">
+				<span
+					class="badge-neo"
+					style="background-color: #{{ tag.tag.colour }}"
+					>{{ tag.tag.name }}</span
+				>
+			</div>
+			{% if tags.count != forloop.counter %}
+				<hr class="bg-black opacity-100 w-[3px]" />
+			{% endif %}
+		</li>
+	{% endfor %}
+</ul>
