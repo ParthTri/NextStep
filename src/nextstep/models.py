@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.query import QuerySet
 from django.utils import timezone
 
 
@@ -28,6 +29,9 @@ class Application(models.Model):
         tags = ApplicationTag.objects.filter(application=self).order_by("-updated_at")
 
         return tags.first().tag
+
+    def get_all_tags(self) -> QuerySet["ApplicationTag"]:
+        return ApplicationTag.objects.filter(application=self)
 
 
 class ApplicationTag(models.Model):
