@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load tz %}
+{% block title %}
+	{{ application.role }}
+{% endblock %}
+
+{% block content %}
+	<section class="lg:px-30 grid grid-cols-[1fr_0.5fr]">
+		<div>
+			<div class="flex justify-between align-center w-1/2">
+				<h1 class="text-4xl">{{ application.role }}</h1>
+				<span
+					class="badge-neo"
+					style="background-color: #{{ current_tag.colour }}"
+					>{{ current_tag }}</span
+				>
+			</div>
+			<h3 class="text-2xl">{{ application.company }}</h3>
+
+			{% timezone "Pacific/Auckland" %}
+				<h4>
+					{{ application.applied_timestamp|date:"d M Y" }} --
+					{{ elapsed_days }}
+				</h4>
+			{% endtimezone %}
+
+			{% if application.job_description != "" %}
+				<div
+					class="mt-10 block border-2 border-black bg-white p-4 shadow-[4px_4px_0_0]"
+				>
+					{{ application.job_description }}
+				</div>
+			{% endif %}
+
+			<div class="w-full mt-10 flex justify-end">
+				<a
+					href="{% url 'application-update' pk=application.id %}"
+					class="btn-neo"
+					>Update Application</a
+				>
+			</div>
+		</div>
+		<div></div>
+	</section>
+{% endblock %}

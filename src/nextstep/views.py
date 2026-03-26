@@ -1,5 +1,6 @@
 from django.http import HttpRequest
 from django.shortcuts import redirect, render
+from django.utils import timesince
 from django.views import View
 
 from nextstep import forms, models
@@ -35,3 +36,20 @@ class Dashboard(View):
             application.save()
 
             return redirect("dashboard")
+
+
+class ApplicationView(View):
+    template_name = "application.html"
+
+    def get(self, request: HttpRequest, *args, **kwargs):
+        context = {}
+
+        application = models.Application.objects.get(id=kwargs.get("pk"))
+
+        context["application"] = application
+        context["tags"] = application.tags.all()
+        context["current_tag"] = application.get_current_tag()
+        context["elapsed_days"] = timesince.timesince(application.applied_timestamp)
+
+        return render(request, self.template_name, context)
+
