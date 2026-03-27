@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 {% load tz %}
+{% load markdown_tag %}
+
 {% block title %}
 	{{ application.role }}
 {% endblock %}
 
 {% block content %}
 	<section class="px-80 grid grid-cols-[1fr_0.5fr]">
-		<div>
+		<div class="w-full mb-10">
 			<div class="flex justify-between align-center w-1/2">
 				<h1 class="text-4xl">{{ application.role }}</h1>
 				<span
@@ -25,23 +27,22 @@
 			{% endtimezone %}
 
 			{% if application.job_description != "" %}
-				<div
-					class="mt-10 block border-2 border-black bg-white p-4 shadow-[4px_4px_0_0]"
+				<article
+					class="max-w-full mt-10 block border-2 border-black bg-white p-4 shadow-[4px_4px_0_0] prose"
 				>
-					{{ application.job_description }}
-				</div>
+					{{ application.job_description|render_markdown }}
+				</article>
 			{% endif %}
-
-			<div class="w-full mt-10 flex justify-end">
+		</div>
+		<div>
+			{% include 'partials/application_timeline.html' with tags=application_tags %}
+			<div class="w-full mt-10 flex justify-center">
 				<a
 					href="{% url 'application-update' pk=application.id %}"
 					class="btn-neo"
 					>Update Application</a
 				>
 			</div>
-		</div>
-		<div>
-			{% include 'partials/application_timeline.html' with tags=application_tags %}
 		</div>
 	</section>
 {% endblock %}
