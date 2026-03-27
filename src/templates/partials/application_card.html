@@ -38,7 +38,10 @@
 	</div>
 
 	<p class="mt-2 line-clamp-2 text-pretty">
-		Lorem ipsum dolor sit, amet consectetur adipisicing elit. At velit illum
-		provident a, ipsa maiores deleniti consectetur nobis et eaque.
+		{% if application.job_description != "" %}
+			{{ application.job_description|truncatechars:60 }}
+		{% else %}
+			<span class="italic">No job descriptino data provided</span>
+		{% endif %}
 	</p>
 </a>
