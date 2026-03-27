@@ -48,6 +48,8 @@ class ApplicationView(View):
 
         context["application"] = application
         context["tags"] = application.tags.all()
+
+        context["application_tags"] = application.get_all_tags().order_by("updated_at")
         context["current_tag"] = application.get_current_tag()
         context["elapsed_days"] = timesince.timesince(application.applied_timestamp)
 
