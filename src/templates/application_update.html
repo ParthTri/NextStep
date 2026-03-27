@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load tz %}
+
+{% block html_head %}
+	<link
+		rel="stylesheet"
+		href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"
+	/>
+	<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+{% endblock %}
+
+{% block title %}
+	{{ application.role }}
+{% endblock %}
+
+{% block content %}
+	<section class="grid grid-cols-1 lg:px-70">
+		<form method="POST">
+			{% csrf_token %}
+			<div class="w-full grid grid-cols-[0.5fr_1fr] gap-5">
+				<fieldset class="fieldset w-full">
+					<legend class="fieldset-legend">
+						{{ form.role.label }}
+					</legend>
+					{{ form.role }}
+					{{ form.role.errors }}
+				</fieldset>
+
+				<fieldset class="fieldset w-full">
+					<legend class="fieldset-legend">
+						{{ form.role_link.label }}
+					</legend>
+					{{ form.role_link }}
+					{{ form.role_link.errors }}
+				</fieldset>
+			</div>
+
+			<div class="w-full grid grid-cols-[0.5fr_1fr] gap-5">
+				<fieldset class="fieldset w-full">
+					<legend class="fieldset-legend">
+						{{ form.company.label }}
+					</legend>
+					{{ form.company }}
+					{{ form.company.errors }}
+				</fieldset>
+
+				<fieldset class="fieldset w-full">
+					<legend class="fieldset-legend">
+						{{ form.company_link.label }}
+					</legend>
+					{{ form.company_link }}
+					{{ form.company_link.errors }}
+				</fieldset>
+			</div>
+
+			<fieldset class="fieldset">
+				<legend for="Notes">
+					<span class="text-sm font-semibold">Job Description</span>
+				</legend>
+				{{ form.job_description }}
+				{{ form.job_description.errors }}
+			</fieldset>
+
+			<fieldset class="fieldset">
+				<legend>{{ form.tags.label }}</legend>
+				{{ form.tags }}
+				{{ form.tags.errors }}
+			</fieldset>
+
+			<div class="w-full mt-10 flex justify-end">
+				<button class="btn-neo">Save</button>
+			</div>
+		</form>
+	</section>
+
+	<script>
+		var simplemde = new SimpleMDE();
+		simplemde.value(`{{ form.job_description.value }}`);
+	</script>
+{% endblock %}
