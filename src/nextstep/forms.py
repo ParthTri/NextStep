@@ -15,3 +15,50 @@ class ApplicationForm(forms.ModelForm):
                 attrs={"type": "datetime-local", "class": "datetime-neo"}
             ),
         }
+
+
+class ApplicationUpdateForm(forms.ModelForm):
+    tags = forms.ModelChoiceField(
+        queryset=models.Tag.objects.all(),
+        widget=forms.Select(attrs={"class": "select-neo h-10"}),
+    )
+
+    class Meta:
+        model = models.Application
+        fields = [
+            "role",
+            "role_link",
+            "company",
+            "company_link",
+            "job_description",
+        ]
+
+        widgets = {
+            "role": forms.TextInput(attrs={"class": "brutal-input w-full"}),
+            "role_link": forms.TextInput(attrs={"class": "brutal-input w-full"}),
+            "company": forms.TextInput(attrs={"class": "brutal-input"}),
+            "company_link": forms.TextInput(attrs={"class": "brutal-input"}),
+            "job_description": forms.Textarea(attrs={"class": "area-neo"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        print(self.instance.get_current_tag().name)
+        self.fields.get("tags").initial = self.instance.get_current_tag()
+
+    def save(self, commit: bool = True):
+        self.instance.role = self.cleaned_data.get("role")
+        self.instance.role_link = self.cleaned_data.get("role_link")
+        self.instance.company = self.cleaned_data.get("company")
+        self.instance.company_link = self.cleaned_data.get("company_link")
+        self.instance.job_description = self.cleaned_data.get("job_description")
+
+        if commit and self.fields.get("tags").initial != self.cleaned_data.get("tags"):
+            tag = models.ApplicationTag.objects.create(
+                application=self.instance, tag=self.cleaned_data.get("tags")
+            )
+
+            self.instance.save()
+
+        return self.instance
