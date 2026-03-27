@@ -44,7 +44,6 @@ class ApplicationUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        print(self.instance.get_current_tag().name)
         self.fields.get("tags").initial = self.instance.get_current_tag()
 
     def save(self, commit: bool = True):
@@ -54,11 +53,11 @@ class ApplicationUpdateForm(forms.ModelForm):
         self.instance.company_link = self.cleaned_data.get("company_link")
         self.instance.job_description = self.cleaned_data.get("job_description")
 
-        if commit and self.fields.get("tags").initial != self.cleaned_data.get("tags"):
-            tag = models.ApplicationTag.objects.create(
-                application=self.instance, tag=self.cleaned_data.get("tags")
-            )
-
+        if commit:
+            if self.fields.get("tags").initial != self.cleaned_data.get("tags"):
+                tag = models.ApplicationTag.objects.create(
+                    application=self.instance, tag=self.cleaned_data.get("tags")
+                )
             self.instance.save()
 
         return self.instance
