@@ -39,7 +39,3 @@ class ApplicationTag(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     # auto_now updates the field every time the save() method is called
     updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        # Prevents the same tag being added to the same application twice
-        unique_together = ("application", "tag")
