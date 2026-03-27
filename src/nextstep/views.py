@@ -55,3 +55,32 @@ class ApplicationView(View):
 
         return render(request, self.template_name, context)
 
+
+class ApplicationUpdateView(View):
+    model = models.Application
+    template_name = "application_update.html"
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+
+        application = models.Application.objects.get(id=kwargs.get("pk"))
+        form = forms.ApplicationUpdateForm(instance=application)
+
+        context["application"] = application
+        context["form"] = form
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        instance = models.Application.objects.get(id=kwargs.get("pk"))
+
+        form = forms.ApplicationUpdateForm(request.POST, instance=instance)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect("application", pk=instance.id)
+        else:
+            return render(
+                request, self.template_name, {"application": instance, "form": form}
+            )
