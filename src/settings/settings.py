@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "nextstep.apps.NextstepConfig",
+    "emails.apps.EmailsConfig",
 ]
 
 MIDDLEWARE = [
