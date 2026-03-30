@@ -84,3 +84,16 @@ class ApplicationUpdateView(View):
             return render(
                 request, self.template_name, {"application": instance, "form": form}
             )
+
+
+class Settings(View):
+    template_name = "settings.html"
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+
+        tags = models.Tag.objects.all()
+
+        context["tags"] = tags
+
+        return render(request, self.template_name, context)

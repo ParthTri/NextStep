@@ -12,4 +12,5 @@ urlpatterns = [
         views.ApplicationUpdateView.as_view(),
         name="application-update",
     ),
+    path("settings", views.Settings.as_view(), name="settings"),
 ]
