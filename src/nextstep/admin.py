@@ -7,3 +7,4 @@ from nextstep import models
 admin.site.register(models.Tag)
 admin.site.register(models.Application)
 admin.site.register(models.ApplicationTag)
+admin.site.register(models.UserEmailAccount)
