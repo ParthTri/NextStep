@@ -86,9 +86,14 @@ def filter_emails(messages, table: dict[int, re.Pattern]):
     return found_applications
 
 
-def classify_with_keywords(text):
+def classify_with_keywords(text, user_categories: list[str]):
     text = text.lower()
     scores = {category: 0 for category in KEYWORDS.keys()}
+
+    # Inject custom user categoreis in to searches
+    for category in user_categories:
+        KEYWORDS[category] = [category.lower()]
+        scores[category] = 0
 
     for category, keywords in KEYWORDS.items():
         for word in keywords:
