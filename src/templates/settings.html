@@ -21,6 +21,14 @@
 							{{ tag.name }}
 						</div>
 					{% endfor %}
+					{% for tag in user_tags %}
+						<div
+							class="badge-neo"
+							style="background-color: #{{ tag.colour }}"
+						>
+							{{ tag.name }}
+						</div>
+					{% endfor %}
 				</div>
 
 				<div class="tag-controls">
@@ -39,46 +47,107 @@
 
 			<form action="{% url 'settings' %}" method="POST">
 				{% csrf_token %}
-				<input type="hidden" name="tags_with_colors" id="hiddenTags" />
+				<input
+					type="hidden"
+					name="final_tags"
+					id="hiddenTagsInput"
+					value="{{ request.POST.final_tags }}"
+				/>
 				<button class="btn-neo">Save</button>
 			</form>
 
 			<script>
+				// 1. SELECTORS
 				const tagList = document.getElementById("tagList");
 				const tagInput = document.getElementById("tagInput");
 				const tagColor = document.getElementById("tagColor");
 				const colorWrapper = document.querySelector(
 					".brutal-color-picker",
 				);
+				const hiddenTagsInput =
+					document.getElementById("hiddenTagsInput");
 
-				// Update the wrapper background color so the user sees their choice
-				tagColor.addEventListener("input", (e) => {
-					colorWrapper.style.backgroundColor = e.target.value;
-				});
+				// State management: array of { label: "NAME", color: "#HEX" }
+				let tagsData = [];
 
+				// The Single Source of Truth for your Form
+				function updateStateAndUI() {
+					// 1. Sync the hidden input for Django
+					const encoded = tagsData
+						.map((t) => `${t.label}|${t.color}`)
+						.join(",");
+					hiddenTagsInput.value = encoded;
+
+					// Console log this during development to see it working in real-time!
+					console.log(
+						"Hidden Input updated to:",
+						hiddenTagsInput.value,
+					);
+
+					// 2. Clear and Redraw the List (to keep UI and Data perfectly synced)
+					// Note: Only do this if you want to be 100% sure,
+					// otherwise just call syncToHiddenInput() inside your add/remove functions.
+				}
+
+				// UPDATED ENTER KEY LISTENER
 				tagInput.addEventListener("keydown", (e) => {
 					if (e.key === "Enter") {
 						e.preventDefault();
-						const label = tagInput.value.trim(); // Brutalism loves Uppercase
+
+						const label = tagInput.value.trim();
 						const color = tagColor.value;
 
-						if (label) {
-							const div = document.createElement("div");
-							div.className = "badge-neo";
-							div.style.backgroundColor = color;
-							// Brutalism usually uses black text regardless of background
+						if (label && !tagsData.some((t) => t.label === label)) {
+							// Add to Data
+							tagsData.push({ label, color });
 
-							div.innerHTML = `
-                    <span>${label}</span>
-                    <span class="remove-btn hover:cursor-pointer">×</span>
-                `;
+							// Add to UI
+							renderTag(label, color);
 
-							div.querySelector(".remove-btn").onclick = () =>
-								div.remove();
+							// SYNC
+							hiddenTagsInput.value = tagsData
+								.map((t) => `${t.label}|${t.color}`)
+								.join(",");
 
-							tagList.appendChild(div);
 							tagInput.value = "";
 						}
+					}
+				});
+
+				function renderTag(label, color) {
+					const div = document.createElement("div");
+					div.className = "badge-neo";
+					div.style.backgroundColor = color;
+					div.innerHTML = `<span>${label}</span><span class="remove-btn">×</span>`;
+
+					div.querySelector(".remove-btn").onclick = () => {
+						// Remove from Data
+						tagsData = tagsData.filter((t) => t.label !== label);
+						// Remove from UI
+						div.remove();
+						// SYNC AGAIN
+						hiddenTagsInput.value = tagsData
+							.map((t) => `${t.label}|${t.color}`)
+							.join(",");
+					};
+
+					tagList.appendChild(div);
+				}
+
+				// 6. INITIALIZATION (RE-HYDRATION)
+				// If Django sends back existing tags (e.g., after a form error),
+				// this handles rendering them on page load.
+				window.addEventListener("DOMContentLoaded", () => {
+					const existingData = hiddenTagsInput.value;
+					if (existingData) {
+						const pairs = existingData.split(",");
+						pairs.forEach((pair) => {
+							const [label, color] = pair.split("|");
+							if (label && color) {
+								tagsData.push({ label, color });
+								addTagElement(label, color);
+							}
+						});
 					}
 				});
 			</script>
