@@ -23,6 +23,12 @@ class Tag(models.Model):
 
 
 class Application(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="applications",
+    )
+
     role = models.CharField(null=False, blank=False)
     role_link = models.CharField(null=False, blank=True)
 
