@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
     unzip \
-    && curl -fsSL https://bun.sh/install | bash \
+    # && curl -fsSL https://bun.sh/install | bash \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Add Bun to the PATH
@@ -24,8 +24,8 @@ COPY ../uv.lock .
 RUN uv sync --frozen --no-cache --no-install-project
 
 # 5. Install Tailwind dependencies using Bun
-COPY ../package.json .
-RUN bun install
+# COPY ../package.json .
+# RUN bun install
 
 # 6. Copy the rest of the code
 COPY ./src/* .
