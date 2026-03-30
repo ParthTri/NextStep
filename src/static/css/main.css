@@ -59,3 +59,22 @@
 .area-neo {
 	@apply mt-0.5 w-full resize-none border-2 border-black shadow-[4px_4px_0_0] focus:ring-2 focus:ring-yellow-300 sm:text-sm;
 }
+
+/* Custom Styled Color Picker Wrapper */
+.brutal-color-picker {
+	@apply relative w-10 h-10 shrink-0 border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]
+           hover:bg-yellow-300 transition-colors cursor-pointer;
+}
+
+/* Make the actual input invisible but clickable over the whole box */
+.brutal-color-picker input[type="color"] {
+	@apply absolute inset-0 w-full h-full opacity-0 cursor-pointer;
+}
+
+.tag-controls {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding-top: 10px;
+	border-top: 1px dashed #eee;
+}
