@@ -9,4 +9,4 @@ echo "🔍 Checking for Django migrations..."
 
 echo "⚡ Starting Django development server..."
 # Run Django in the foreground
-exec uv run python src/manage.py runserver 0.0.0.0:8000
+exec /opt/venv/bin/python -u src/manage.py runserver 0.0.0.0:8000

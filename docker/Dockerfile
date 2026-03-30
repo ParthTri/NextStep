@@ -19,9 +19,12 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 WORKDIR /code
 
 # 4. Install Python dependencies using uv
-COPY ../pyproject.toml .
-COPY ../uv.lock .
-RUN uv sync --frozen --no-cache --no-install-project
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY pyproject.toml .
+COPY uv.lock .
+RUN uv sync --frozen --no-cache
 
 # 5. Install Tailwind dependencies using Bun
 # COPY ../package.json .
@@ -29,10 +32,6 @@ RUN uv sync --frozen --no-cache --no-install-project
 
 # 6. Copy the rest of the code
 COPY ./src/* .
-
-# 7. Set Environment Variables
-ENV PATH="/code/.venv/bin:$PATH"
-ENV PYTHONUNBUFFERED=1
 
 # Expose Django port
 EXPOSE 8000
