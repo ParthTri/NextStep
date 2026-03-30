@@ -1,0 +1,78 @@
+services:
+    # 1. Redis: Standard alpine image for caching/tasks
+    redis:
+        image: redis:7-alpine
+        container_name: django_redis_dev
+        ports:
+            - "6379:6379" # Exposed so you can inspect it with Redis Insight or CLI
+        networks:
+            - dev_network
+
+    # 2. Ollama: The AI engine
+    ollama:
+        image: ollama/ollama:latest
+        container_name: ollama_dev
+        ports:
+            - "11434:11434" # Exposed so you can test prompts via Postman/Curl locally
+        volumes:
+            - ollama_storage:/root/.ollama
+        networks:
+            - dev_network
+        # GPU Support: Uncomment if you have NVIDIA drivers & container-toolkit installed
+        # deploy:
+        #   resources:
+        #     reservations:
+        #       devices:
+        #         - driver: nvidia
+        #           count: 1
+        #           capabilities: [gpu]
+
+    # 3. Model Puller: Automatically downloads the model on startup
+    ollama-pull-llama:
+        image: curlimages/curl:latest
+        container_name: ollama_puller
+        networks:
+            - dev_network
+        depends_on:
+            - ollama
+        # This pulls llama3 automatically so it's ready when Django starts
+        entrypoint:
+            [
+                "curl",
+                "-X",
+                "POST",
+                "http://ollama:11434/api/pull",
+                "-d",
+                '{"name": "llama3"}',
+            ]
+
+    # 4. Django: Your application
+    web:
+        build:
+            context: .
+            dockerfile: ./docker/Dockerfile
+        container_name: django_web_dev
+        volumes:
+            - ./:/code
+            # Prevent Docker from overwriting the container's node_modules with your host's
+            # (if they differ by OS)
+            - /code/node_modules
+        ports:
+            - "8000:8000"
+        env_file:
+            - .env
+        environment:
+            - DEBUG=1
+            - OLLAMA_HOST=http://ollama:11434
+        depends_on:
+            - redis
+            - ollama
+        networks:
+            - dev_network
+
+networks:
+    dev_network:
+        driver: bridge
+
+volumes:
+    ollama_storage:
