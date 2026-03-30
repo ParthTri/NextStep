@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.db.models.query import QuerySet
 from django.utils import timezone
@@ -7,6 +8,12 @@ from django.utils import timezone
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
     colour = models.CharField(max_length=8, null=False, default="3B82F6")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="tags",
+        null=True,
+    )
 
     def __str__(self):
         return self.name
@@ -39,3 +46,11 @@ class ApplicationTag(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     # auto_now updates the field every time the save() method is called
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class EmailIntegration(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="email_integration",
+    )
