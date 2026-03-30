@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 from django.utils import timesince
 from django.views import View
 
+from emails import email_reader as er
 from nextstep import forms, models
 
 
@@ -119,3 +120,19 @@ class Settings(View):
         context["user_tags"] = user_tags
 
         return render(request, self.template_name, context)
+
+
+def email_check(request: HttpRequest):
+    if request.method == "POST":
+        print(request.POST)
+        service = er.get_creds_and_build(request.user)
+        print(service)
+
+        emails = er.get_latest_emails(service)
+        messages = er.read_emails(service, emails)
+        print(messages)
+
+    else:
+        pass
+
+    return redirect("settings")

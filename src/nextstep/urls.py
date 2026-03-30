@@ -13,4 +13,5 @@ urlpatterns = [
         name="application-update",
     ),
     path("settings", views.Settings.as_view(), name="settings"),
+    path("emails", views.email_check, name="email-handler"),
 ]
