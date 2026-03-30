@@ -1,5 +1,16 @@
 services:
-    # 1. Redis: Standard alpine image for caching/tasks
+    # 1. Postgres Database
+    db:
+        image: postgres:15-alpine
+        hostname: db
+        volumes:
+            - ./postgres_data:/var/lib/postgresql/data
+        env_file:
+            - .env
+        networks:
+            - dev_network
+
+    # 2. Redis: Standard alpine image for caching/tasks
     redis:
         image: redis:7-alpine
         container_name: django_redis_dev
@@ -8,49 +19,12 @@ services:
         networks:
             - dev_network
 
-    # 2. Ollama: The AI engine
-    ollama:
-        image: ollama/ollama:latest
-        container_name: ollama_dev
-        ports:
-            - "11434:11434" # Exposed so you can test prompts via Postman/Curl locally
-        volumes:
-            - ollama_storage:/root/.ollama
-        networks:
-            - dev_network
-        # GPU Support: Uncomment if you have NVIDIA drivers & container-toolkit installed
-        # deploy:
-        #   resources:
-        #     reservations:
-        #       devices:
-        #         - driver: nvidia
-        #           count: 1
-        #           capabilities: [gpu]
-
-    # 3. Model Puller: Automatically downloads the model on startup
-    ollama-pull-llama:
-        image: curlimages/curl:latest
-        container_name: ollama_puller
-        networks:
-            - dev_network
-        depends_on:
-            - ollama
-        # This pulls llama3 automatically so it's ready when Django starts
-        entrypoint:
-            [
-                "curl",
-                "-X",
-                "POST",
-                "http://ollama:11434/api/pull",
-                "-d",
-                '{"name": "llama3"}',
-            ]
-
-    # 4. Django: Your application
+    # 3. Django: Your application
     web:
         build:
             context: .
             dockerfile: ./docker/Dockerfile
+        command: /usr/local/bin/run.sh
         container_name: django_web_dev
         volumes:
             - .:/code
@@ -64,12 +38,48 @@ services:
             - .env
         environment:
             - DEBUG=1
-            - OLLAMA_HOST=http://ollama:11434
         depends_on:
             - redis
-            - ollama
+            - db
         networks:
             - dev_network
+    # 2. Ollama: The AI engine
+    # ollama:
+    #     image: ollama/ollama:latest
+    #     container_name: ollama_dev
+    #     ports:
+    #         - "11434:11434" # Exposed so you can test prompts via Postman/Curl locally
+    #     volumes:
+    #         - ollama_storage:/root/.ollama
+    #     networks:
+    #         - dev_network
+    # GPU Support: Uncomment if you have NVIDIA drivers & container-toolkit installed
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+    # 3. Model Puller: Automatically downloads the model on startup
+    # ollama-pull-llama:
+    #     image: curlimages/curl:latest
+    #     container_name: ollama_puller
+    #     networks:
+    #         - dev_network
+    #     depends_on:
+    #         - ollama
+    #     # This pulls llama3 automatically so it's ready when Django starts
+    #     entrypoint:
+    #         [
+    #             "curl",
+    #             "-X",
+    #             "POST",
+    #             "http://ollama:11434/api/pull",
+    #             "-d",
+    #             '{"name": "llama3"}',
+    #         ]
 
 networks:
     dev_network:
