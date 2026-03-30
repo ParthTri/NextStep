@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "nextstep.apps.NextstepConfig",
     "emails.apps.EmailsConfig",
+    "encrypted_model_fields",
 ]
 
 MIDDLEWARE = [
@@ -131,3 +132,5 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+FIELD_ENCRYPTION_KEY = str(os.getenv("ENCRYPTION_KEY"))
