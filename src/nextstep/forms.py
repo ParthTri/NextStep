@@ -16,6 +16,17 @@ class ApplicationForm(forms.ModelForm):
             ),
         }
 
+    def save(self, user, commit: bool = True):
+        self.instance.role = self.cleaned_data.get("role")
+        self.instance.company = self.cleaned_data.get("company")
+        self.instance.applied_timestamp = self.cleaned_data.get("applied_timestamp")
+        self.instance.user = user
+
+        if commit:
+            self.instance.save()
+
+        return self.instance
+
 
 class ApplicationUpdateForm(forms.ModelForm):
     tags = forms.ModelChoiceField(

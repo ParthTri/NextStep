@@ -33,7 +33,7 @@ class Dashboard(View):
         application_form = forms.ApplicationForm(request.POST)
 
         if application_form.is_valid():
-            application = application_form.save()
+            application = application_form.save(user=request.user)
             tag = models.Tag.objects.get(name="Applied")
             application.tags.add(tag)
             application.save()
