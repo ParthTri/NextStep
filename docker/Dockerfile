@@ -42,7 +42,3 @@ COPY ./docker/run.dev.sh /usr/local/bin/run.sh
 
 # 2. Make the script executable
 RUN chmod +x /usr/local/bin/run.sh
-
-# 8. Start Tailwind Watch (via Bun) and Django
-# The '&' runs bun in the background while Django runs in the foreground
-CMD ["/usr/local/bin/run.sh"]

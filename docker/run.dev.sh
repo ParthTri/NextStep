@@ -5,7 +5,7 @@ set -e
 
 echo "🔍 Checking for Django migrations..."
 # Optional: Uncomment if you want auto-migrations on startup
-# python manage.py migrate --noinput
+python src/manage.py migrate --noinput
 
 echo "⚡ Starting Django development server..."
 # Run Django in the foreground
