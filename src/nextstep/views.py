@@ -1,3 +1,5 @@
+import logging
+
 from django.http import HttpRequest
 from django.shortcuts import redirect, render
 from django.utils import timesince
@@ -92,8 +94,28 @@ class Settings(View):
     def get(self, request, *args, **kwargs):
         context = {}
 
-        tags = models.Tag.objects.all()
+        tags = models.Tag.objects.filter(user=None)
+        user_tags = models.Tag.objects.filter(user=request.user)
 
         context["tags"] = tags
+        context["user_tags"] = user_tags
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        context = {}
+        final_tags = request.POST.get("final_tags").split(",")
+
+        for tag in final_tags:
+            name, colour = tag.split("|")
+            colour = colour[1::]
+
+            models.Tag.objects.create(name=name, colour=colour, user=request.user)
+
+        tags = models.Tag.objects.filter(user=None)
+        user_tags = models.Tag.objects.filter(user=request.user)
+
+        context["tags"] = tags
+        context["user_tags"] = user_tags
 
         return render(request, self.template_name, context)
