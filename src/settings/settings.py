@@ -134,3 +134,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 FIELD_ENCRYPTION_KEY = str(os.getenv("ENCRYPTION_KEY"))
+
+GOOGLE_CLIENT_ID = str(os.getenv("GOOGLE_CLIENT_ID"))
+GOOGLE_CLIENT_SECRET = str(os.getenv("GOOGLE_CLIENT_SECRET"))
