@@ -3,6 +3,8 @@ from django.db import models
 from django.db.models.query import QuerySet
 from django.utils import timezone
 from encrypted_model_fields.fields import EncryptedTextField
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
 
 
 # Create your models here.
@@ -64,7 +66,11 @@ class UserEmailAccount(models.Model):
         ("IMAP", "Generic IMAP (Yahoo, iCloud, etc.)"),
     ]
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="email_account",
+    )
     provider = models.CharField(max_length=10, choices=PROVIDER_CHOICES)
     email_address = models.EmailField()
 
@@ -81,3 +87,27 @@ class UserEmailAccount(models.Model):
 
     def __str__(self):
         return f"{self.email_address} ({self.provider})"
+
+    def get_google_creds(self):
+        """Returns a valid Google Credentials object, refreshing if necessary."""
+        if self.provider != "GMAIL":
+            return None
+
+        creds = Credentials(
+            token=self.access_token,
+            refresh_token=self.refresh_token,
+            token_uri="https://oauth2.googleapis.com/token",
+            client_id=settings.GOOGLE_CLIENT_ID,
+            client_secret=settings.GOOGLE_CLIENT_SECRET,
+            scopes=["https://www.googleapis.com/auth/gmail.readonly"],
+        )
+
+        # Auto-refresh if the access_token is dead
+        if creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+            # Save the new short-lived token back to the DB
+            self.access_token = creds.token
+            self.token_expiry = creds.expiry
+            self.save()
+
+        return creds
