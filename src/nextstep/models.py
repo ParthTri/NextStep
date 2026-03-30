@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models.query import QuerySet
 from django.utils import timezone
+from encrypted_model_fields.fields import EncryptedTextField
 
 
 # Create your models here.
@@ -54,3 +55,29 @@ class EmailIntegration(models.Model):
         on_delete=models.CASCADE,
         related_name="email_integration",
     )
+
+
+class UserEmailAccount(models.Model):
+    PROVIDER_CHOICES = [
+        ("GMAIL", "Google Gmail"),
+        ("OUTLOOK", "Microsoft Outlook"),
+        ("IMAP", "Generic IMAP (Yahoo, iCloud, etc.)"),
+    ]
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    provider = models.CharField(max_length=10, choices=PROVIDER_CHOICES)
+    email_address = models.EmailField()
+
+    # OAuth Fields (Used by Gmail & Outlook)
+    access_token = EncryptedTextField(blank=True, null=True)
+    refresh_token = EncryptedTextField(blank=True, null=True)
+    token_expiry = models.DateTimeField(blank=True, null=True)
+
+    # IMAP Fields (Used by others)
+    imap_server = models.CharField(max_length=255, blank=True, null=True)
+    imap_password = EncryptedTextField(blank=True, null=True)  # "App Password"
+
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.email_address} ({self.provider})"
