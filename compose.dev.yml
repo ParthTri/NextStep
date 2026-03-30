@@ -53,9 +53,10 @@ services:
             dockerfile: ./docker/Dockerfile
         container_name: django_web_dev
         volumes:
-            - ./:/code
+            - .:/code
             # Prevent Docker from overwriting the container's node_modules with your host's
             # (if they differ by OS)
+            - /code/.venv # <--- ADD THIS: Internal container venv
             - /code/node_modules
         ports:
             - "8000:8000"
