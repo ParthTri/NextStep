@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}
+	Settings
+{% endblock %}
+
+{% block content %}
+	<section class="lg:px-60">
+		<div class="h-60 flex flex-col justify-between mb-10">
+			<h3 class="text-2xl">Tags</h3>
+			<div class="max-w-125">
+				<div
+					id="tagList"
+					class="tag-display-area flex flex-wrap gap-2 mb-3.75 min-h-10"
+				>
+					{% for tag in tags %}
+						<div
+							class="badge-neo"
+							style="background-color: #{{ tag.colour }}"
+						>
+							{{ tag.name }}
+						</div>
+					{% endfor %}
+				</div>
+
+				<div class="tag-controls">
+					<div class="brutal-color-picker">
+						<input type="color" id="tagColor" value="#ffff00" />
+					</div>
+
+					<input
+						type="text"
+						id="tagInput"
+						class="brutal-input"
+						placeholder="Type a tag and press Enter..."
+					/>
+				</div>
+			</div>
+
+			<form action="{% url 'settings' %}" method="POST">
+				{% csrf_token %}
+				<input type="hidden" name="tags_with_colors" id="hiddenTags" />
+				<button class="btn-neo">Save</button>
+			</form>
+
+			<script>
+				const tagList = document.getElementById("tagList");
+				const tagInput = document.getElementById("tagInput");
+				const tagColor = document.getElementById("tagColor");
+				const colorWrapper = document.querySelector(
+					".brutal-color-picker",
+				);
+
+				// Update the wrapper background color so the user sees their choice
+				tagColor.addEventListener("input", (e) => {
+					colorWrapper.style.backgroundColor = e.target.value;
+				});
+
+				tagInput.addEventListener("keydown", (e) => {
+					if (e.key === "Enter") {
+						e.preventDefault();
+						const label = tagInput.value.trim(); // Brutalism loves Uppercase
+						const color = tagColor.value;
+
+						if (label) {
+							const div = document.createElement("div");
+							div.className = "badge-neo";
+							div.style.backgroundColor = color;
+							// Brutalism usually uses black text regardless of background
+
+							div.innerHTML = `
+                    <span>${label}</span>
+                    <span class="remove-btn hover:cursor-pointer">×</span>
+                `;
+
+							div.querySelector(".remove-btn").onclick = () =>
+								div.remove();
+
+							tagList.appendChild(div);
+							tagInput.value = "";
+						}
+					}
+				});
+			</script>
+		</div>
+
+		<div>
+			<h3 class="text-2xl">Connect To Email</h3>
+			<button class="btn-neo">Connect to Gmail</button>
+		</div>
+	</section>
+{% endblock %}
