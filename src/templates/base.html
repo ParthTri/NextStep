@@ -13,12 +13,16 @@
 			type="text/css"
 		/>
 
-		{% block html_head %} {% endblock %}
+		{% block html_head %}{% endblock %}
 	</head>
 	<body>
-		<header class="w-screen pt-5">{% include "partials/nav.html" %}</header>
+		<header class="w-screen pt-5">
+			{% if user %}
+				{% include "partials/nav.html" %}
+			{% endif %}
+		</header>
 		<main class="sm:px-20 md:px-30 lg:px-40 mt-5">
-			{% block content %} {% endblock %}
+			{% block content %}{% endblock %}
 		</main>
 	</body>
 </html>
