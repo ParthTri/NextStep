@@ -158,11 +158,6 @@
 			<a href="{% url 'connect-google' %}" class="btn-neo"
 				>Connect to Gmail</a
 			>
-
-			<form action="{% url 'email-handler' %}" method="POST">
-				{% csrf_token %}
-				<button class="btn-neo">Check Emails Now</button>
-			</form>
 		</div>
 	</section>
 {% endblock %}
