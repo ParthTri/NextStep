@@ -58,6 +58,20 @@ services:
             - redis
         networks:
             - dev_network
+
+    beat:
+        build:
+            context: .
+            dockerfile: ./docker/Dockerfile
+        command: sh -c "cd src && celery -A settings beat --loglevel=info"
+        volumes:
+            - .:/code
+        depends_on:
+            - db
+            - redis
+        networks:
+            - dev_network
+
     # 2. Ollama: The AI engine
     # ollama:
     #     image: ollama/ollama:latest
