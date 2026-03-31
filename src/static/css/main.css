@@ -78,3 +78,8 @@
 	padding-top: 10px;
 	border-top: 1px dashed #eee;
 }
+
+.error {
+	color: red;
+	font-style: italic;
+}
