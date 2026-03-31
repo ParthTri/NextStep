@@ -1,3 +1,5 @@
+from typing import Any
+
 from django import forms
 
 from nextstep import models
@@ -79,3 +81,24 @@ class SigninForm(forms.Form):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={"class": "brutal-input"})
     )
+
+
+class SignupForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={"class": "brutal-input"}))
+
+    email = forms.CharField(widget=forms.EmailInput(attrs={"class": "brutal-input"}))
+
+    password = forms.CharField(
+        min_length=8, widget=forms.PasswordInput(attrs={"class": "brutal-input"})
+    )
+    confirm_password = forms.CharField(
+        min_length=8, widget=forms.PasswordInput(attrs={"class": "brutal-input"})
+    )
+
+    def clean(self) -> dict[str, Any] | None:
+        cleaned_data: dict[str, Any] = super().clean()
+
+        if cleaned_data.get("password") != cleaned_data.get("confirm_password"):
+            raise forms.ValidationError({"confirm_password": "Passwords do not match"})
+
+        return cleaned_data
