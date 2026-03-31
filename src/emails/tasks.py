@@ -1,7 +1,10 @@
 from celery.app import shared_task
+from celery.utils.log import get_task_logger
 
 from emails import email_reader, parser
 from nextstep import models
+
+logger = get_task_logger(__name__)
 
 
 # Main task to get all the details
@@ -49,6 +52,9 @@ def bg_emails():
             if category is not None:
                 tag = models.Tag.objects.get(name=category)
                 application = models.Application.objects.get(id=application_id)
-                application = models.ApplicationTag.objects.create(
-                    application=application, tag=tag
-                )
+
+                if application.get_current_tag() != tag:
+                    application = models.ApplicationTag.objects.create(
+                        application=application, tag=tag
+                    )
+                    logger.info(f"{application.id} Updated status to {category}")
