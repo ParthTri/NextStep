@@ -31,7 +31,7 @@ RUN uv sync --frozen --no-cache
 # RUN bun install
 
 # 6. Copy the rest of the code
-COPY ./src/* .
+COPY . .
 
 # Expose Django port
 EXPOSE 8000
