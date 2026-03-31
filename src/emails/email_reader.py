@@ -56,7 +56,7 @@ def decode_base64(data):
 
 def get_latest_emails(service) -> List[dict[str, str]] | str:
     # 1. Search for emails in the last 30 mins
-    thirty_mins_ago = int(time.time() - (120 * 60))
+    thirty_mins_ago = int(time.time() - (30 * 60))
     query = f"in:inbox after:{thirty_mins_ago}"
 
     results = service.users().messages().list(userId="me", q=query).execute()
