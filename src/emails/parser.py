@@ -58,10 +58,9 @@ KEYWORDS = {
 }
 
 
-def construct_lookup_table(user) -> dict[int, re.Pattern]:
-    applications = models.Application.objects.filter(user=user).exclude(
-        tags__name__in=["Rejected", "Withdrawn"]
-    )
+def construct_lookup_table(
+    applications: models.QuerySet[models.Application],
+) -> dict[int, re.Pattern]:
 
     patterns = {}
 
@@ -75,7 +74,7 @@ def construct_lookup_table(user) -> dict[int, re.Pattern]:
     return patterns
 
 
-def filter_emails(messages, table: dict[int, re.Pattern]):
+def filter_emails(messages, table: dict[int, re.Pattern]) -> dict[int, str]:
     found_applications: dict[int, str] = {}
 
     for id, pattern in table.items():

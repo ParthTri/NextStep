@@ -8,12 +8,10 @@ from googleapiclient.discovery import build
 from nextstep import models
 
 
-def get_creds_and_build(user):
+def get_creds_and_build(account: models.UserEmailAccount):
     # 1. Fetch the active Gmail account for this user
-    account: models.UserEmailAccount = user.email_account
-
-    if not account and account.provider == "GMAIL":
-        return "Error: No active Gmail account connected for this user."
+    if not account or account.provider != "GMAIL":
+        raise Exception("Error: No active Gmail account connected for this user.")
 
     # 2. Get the credentials object (handles encryption & refreshing internally)
     try:
