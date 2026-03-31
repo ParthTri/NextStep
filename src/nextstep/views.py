@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpRequest
 from django.shortcuts import redirect, render
 from django.utils import timesince
@@ -5,8 +6,43 @@ from django.views import View
 
 from nextstep import forms, models
 
-
 # Create your views here.
+
+
+# TODO: Create initial view to signup and create a user
+class LoginView(View):
+    template_name = "auth/signin.html"
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+
+        signin_form = forms.SigninForm()
+        context["signin_form"] = signin_form
+        context["user"] = False
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        context = {}
+        signin_form = forms.SigninForm(request.POST)
+        context["signin_form"] = signin_form
+        context["user"] = False
+
+        if signin_form.is_valid():
+            user = authenticate(
+                username=signin_form.cleaned_data.get("username"),
+                password=signin_form.cleaned_data.get("password"),
+            )
+            if user is not None:
+                login(request, user)
+                return redirect("dashboard")
+            else:
+                context["form_error"] = "Username or password is not correct."
+                return render(request, self.template_name, context)
+        else:
+            return render(request, self.template_name, context)
+
+
 class Dashboard(View):
     template_name = "dashboard.html"
 
@@ -22,6 +58,7 @@ class Dashboard(View):
 
         context["applications"] = applications
         context["application_form"] = application_form
+        context["user"] = request.user
 
         return render(request, self.template_name, context)
 
@@ -68,6 +105,7 @@ class ApplicationUpdateView(View):
 
         context["application"] = application
         context["form"] = form
+        context["user"] = request.user
 
         return render(request, self.template_name, context)
 
@@ -97,6 +135,7 @@ class Settings(View):
 
         context["tags"] = tags
         context["user_tags"] = user_tags
+        context["user"] = request.user
 
         return render(request, self.template_name, context)
 
@@ -115,5 +154,6 @@ class Settings(View):
 
         context["tags"] = tags
         context["user_tags"] = user_tags
+        context["user"] = request.user
 
         return render(request, self.template_name, context)
