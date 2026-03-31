@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.shortcuts import redirect, render
@@ -86,8 +87,17 @@ class SignupView(View):
             return render(request, self.template_name, context)
 
 
-class Dashboard(View):
+def logout_handler(request):
+    """Logging out users"""
+
+    logout(request)
+
+    return redirect("signin")
+
+
+class Dashboard(LoginRequiredMixin, View):
     template_name = "dashboard.html"
+    login_url = "/signin"
 
     def get(self, request: HttpRequest, *args, **kwargs):
         context = {}
@@ -118,8 +128,9 @@ class Dashboard(View):
             return redirect("dashboard")
 
 
-class ApplicationView(View):
+class ApplicationView(LoginRequiredMixin, View):
     template_name = "application.html"
+    login_url = "/signin"
 
     def get(self, request: HttpRequest, *args, **kwargs):
         context = {}
@@ -136,7 +147,7 @@ class ApplicationView(View):
         return render(request, self.template_name, context)
 
 
-class ApplicationUpdateView(View):
+class ApplicationUpdateView(LoginRequiredMixin, View):
     model = models.Application
     template_name = "application_update.html"
 
@@ -167,8 +178,9 @@ class ApplicationUpdateView(View):
             )
 
 
-class Settings(View):
+class Settings(LoginRequiredMixin, View):
     template_name = "settings.html"
+    login_url = "/signin"
 
     def get(self, request, *args, **kwargs):
         context = {}
