@@ -1,4 +1,7 @@
+import logging
+
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.shortcuts import redirect, render
 from django.utils import timesince
@@ -43,6 +46,46 @@ class LoginView(View):
             return render(request, self.template_name, context)
 
 
+class SignupView(View):
+    template_name = "auth/signup.html"
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+
+        signup_form = forms.SignupForm()
+        context["signup_form"] = signup_form
+        context["user"] = False
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        context = {}
+        signup_form = forms.SignupForm(request.POST)
+        context["signup_form"] = signup_form
+        context["user"] = False
+
+        if signup_form.is_valid():
+            try:
+                user = User.objects.create_user(
+                    username=signup_form.cleaned_data.get("username"),
+                    email=signup_form.cleaned_data.get("email"),
+                    password=signup_form.cleaned_data.get("password"),
+                )
+            except Exception as e:
+                context["form_error"] = (
+                    "Oops something went wrong, please try again later"
+                )
+                logger = logging.getLogger()
+                logger.error(f"Could not signup user, got '{e}'")
+
+                return render(request, self.template_name, context)
+            else:
+                login(request, user)
+                return redirect("dashboard")
+        else:
+            return render(request, self.template_name, context)
+
+
 class Dashboard(View):
     template_name = "dashboard.html"
 
@@ -50,7 +93,7 @@ class Dashboard(View):
         context = {}
 
         applications = (
-            models.Application.objects.all()
+            models.Application.objects.filter(user=request.user)
             .order_by("-applied_timestamp", "role")
             .prefetch_related("tags")
         )
