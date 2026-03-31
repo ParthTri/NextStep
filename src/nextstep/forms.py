@@ -72,3 +72,10 @@ class ApplicationUpdateForm(forms.ModelForm):
             self.instance.save()
 
         return self.instance
+
+
+class SigninForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={"class": "brutal-input"}))
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"class": "brutal-input"})
+    )
