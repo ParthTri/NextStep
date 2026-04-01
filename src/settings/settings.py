@@ -38,7 +38,7 @@ APP_NAME = (
 )
 CSRF_TRUSTED_ORIGINS = [f"https://{APP_NAME}"]
 
-ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = [APP_NAME, "localhost"]
 
 
 # Application definition
