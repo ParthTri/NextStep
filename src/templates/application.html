@@ -36,12 +36,20 @@
 		</div>
 		<div>
 			{% include 'partials/application_timeline.html' with tags=application_tags %}
-			<div class="w-full mt-10 flex justify-center">
+			<div
+				class="w-full mt-10 flex flex-col justify-center items-center gap-3"
+			>
 				<a
 					href="{% url 'application-update' pk=application.id %}"
-					class="btn-neo"
+					class="btn-neo w-55"
 					>Update Application</a
 				>
+				<a
+					href="{% url 'application-delete' pk=application.id %}"
+					class="btn-neo w-55 hover:bg-[#EF4444]"
+				>
+					Delete Application
+				</a>
 			</div>
 		</div>
 	</section>

@@ -12,6 +12,11 @@ urlpatterns = [
         views.ApplicationUpdateView.as_view(),
         name="application-update",
     ),
+    path(
+        "application/<int:pk>/delete",
+        views.ApplicationDelete,
+        name="application-delete",
+    ),
     path("settings", views.Settings.as_view(), name="settings"),
     path("signin", views.LoginView.as_view(), name="signin"),
     path("signup", views.SignupView.as_view(), name="signup"),

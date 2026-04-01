@@ -1,10 +1,11 @@
 import logging
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import HttpRequest
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timesince
 from django.views import View
 
@@ -176,6 +177,15 @@ class ApplicationUpdateView(LoginRequiredMixin, View):
             return render(
                 request, self.template_name, {"application": instance, "form": form}
             )
+
+
+@login_required(login_url="/signin")
+def ApplicationDelete(request, pk):
+    application = get_object_or_404(models.Application, id=pk, user=request.user)
+
+    application.delete()
+
+    return redirect("dashboard")
 
 
 class Settings(LoginRequiredMixin, View):
