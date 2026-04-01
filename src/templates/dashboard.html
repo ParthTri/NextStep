@@ -3,7 +3,9 @@
 {% block title %}Dashboard | NextStep{% endblock %}
 
 {% block content %}
-	<section class="flex gap-5">
+	<section
+		class="grid gap-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 auto-rows-auto"
+	>
 		{% for application in applications %}
 			{% include "partials/application_card.html" %}
 		{% endfor %}
