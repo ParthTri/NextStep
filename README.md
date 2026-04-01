@@ -48,7 +48,7 @@ Once you've installed and started using the docker compose file, you can navigat
 
 ### Linking Emails from Google
 
-To link your emails with Google (only one supported right now) you will need to first go to [console.cloud.google.com](https:/console.cloud.google.com), and register to use OAuth 2.0 Client.
+To link your emails with Google (only one supported right now) you will need to first go to [console.cloud.google.com](https://console.cloud.google.com), and register to use OAuth 2.0 Client.
 
 You can follow these general steps to register a client.
 
