@@ -29,7 +29,7 @@ def connect_to_gmail(request):
         },
         scopes=SCOPES,
         # Ensure this matches your Redirect URI in Google Console exactly
-        redirect_uri=request.build_absolute_uri("/connect/oauth"),
+        redirect_uri=settings.APP_URL + "/connect/oauth",
     )
 
     # prompt='consent' and access_type='offline' are REQUIRED to get a refresh_token
@@ -56,7 +56,7 @@ def oauth2callback(request):
         },
         scopes=SCOPES,
         state=state,
-        redirect_uri=request.build_absolute_uri("/connect/oauth"),
+        redirect_uri=settings.APP_URL + "/connect/oauth",
     )
     flow.code_verifier = request.session.get("code_verifier")
 

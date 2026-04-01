@@ -40,6 +40,10 @@ CSRF_TRUSTED_ORIGINS = [f"https://{APP_NAME}"]
 
 ALLOWED_HOSTS = [APP_NAME, "localhost"]
 
+if DEBUG:
+    APP_URL = "http://" + APP_NAME
+else:
+    APP_URL = "https://" + APP_NAME
 
 # Application definition
 
