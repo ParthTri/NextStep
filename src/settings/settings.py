@@ -27,10 +27,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = str(os.getenv("DJANGO_SECRET"))
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Read numeric debug flag (1 = dev, 0 = prod)
+DEBUG = bool(int(os.getenv("DEBUG", "1")))
 
-ALLOWED_HOSTS = []
+# Make sure the APP_NAME is either the IP address or the base domaain name, i.e., nextstep.com
+APP_NAME = (
+    str(os.getenv("APP_NAME"))
+    if os.getenv("APP_NAME") is not None
+    else "localhost:8000"
+)
+CSRF_TRUSTED_ORIGINS = [f"https://{APP_NAME}"]
+
+ALLOWED_HOSTS = [APP_NAME]
 
 
 # Application definition
