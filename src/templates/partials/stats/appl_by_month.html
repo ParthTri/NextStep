@@ -1,0 +1,46 @@
+<div>
+	<div
+		class="bg-white p-6 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] w-full"
+	>
+		<canvas id="appl_by_month"></canvas>
+	</div>
+
+	{{ data|json_script:"bar-data" }}
+	{{ labels|json_script:"bar-labels" }}
+	{{ colours|json_script:"bar-colours" }}
+	{{ borders|json_script:"bar-borders" }}
+
+	<script>
+		// Safely grab the data from the script tags
+		const barData = JSON.parse(
+			document.getElementById("bar-data").textContent,
+		);
+		const barLabels = JSON.parse(
+			document.getElementById("bar-labels").textContent,
+		);
+		const barColours = JSON.parse(
+			document.getElementById("bar-colours").textContent,
+		);
+		const barBorders = JSON.parse(
+			document.getElementById("bar-borders").textContent,
+		);
+
+		const bar = document.getElementById("appl_by_month");
+		console.log(bar);
+		new Chart(bar, {
+			type: "bar",
+			data: {
+				labels: barLabels,
+				datasets: [
+					{
+						label: "Applications by Month",
+						data: barData,
+						backgroundColor: barColours,
+						borderColor: barBorders,
+						borderWidth: 3,
+					},
+				],
+			},
+		});
+	</script>
+</div>

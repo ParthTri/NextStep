@@ -21,3 +21,4 @@ media/
 # Application
 src/static/css/output.css
 db.sqlite3
+celerybeat-schedule

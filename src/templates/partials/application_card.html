@@ -29,12 +29,14 @@
 			<h3 class="mt-1 text-xl font-semibold">{{ application.role }}</h3>
 			<h4>{{ application.company }}</h4>
 		</div>
-		<span
-			class="badge-neo"
-			style="background-color: #{{ application.get_current_tag.colour }}"
-		>
-			{{ application.get_current_tag.name }}
-		</span>
+		{% if application.get_current_tag is not None %}
+			<span
+				class="badge-neo"
+				style="background-color: #{{ application.get_current_tag.colour }}"
+			>
+				{{ application.get_current_tag.name }}
+			</span>
+		{% endif %}
 	</div>
 
 	<p class="mt-2 line-clamp-2 text-pretty">

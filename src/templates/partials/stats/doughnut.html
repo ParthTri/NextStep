@@ -1,0 +1,40 @@
+<div>
+	<div
+		class="bg-white p-6 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] min-w-2xl"
+	>
+		<canvas id="doughnut"></canvas>
+	</div>
+
+	{{ data|json_script:"doughnut-data" }}
+	{{ labels|json_script:"doughnut-labels" }}
+	{{ colours|json_script:"doughnut-colours" }}
+
+	<script>
+		// Safely grab the data from the script tags
+		const doughnutData = JSON.parse(
+			document.getElementById("doughnut-data").textContent,
+		);
+		const doughnutLabels = JSON.parse(
+			document.getElementById("doughnut-labels").textContent,
+		);
+		const doughnutColours = JSON.parse(
+			document.getElementById("doughnut-colours").textContent,
+		);
+
+		const doughnut = document.getElementById("doughnut");
+		new Chart(doughnut, {
+			type: "doughnut",
+			data: {
+				labels: doughnutLabels,
+				datasets: [
+					{
+						data: doughnutData,
+						borderColor: "black",
+						tension: 0.1,
+						backgroundColor: doughnutColours,
+					},
+				],
+			},
+		});
+	</script>
+</div>

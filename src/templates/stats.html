@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Stats{% endblock %}
+
+{% block html_head %}
+	<script src="{% static 'js/chart.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+	<div class="m-12 text-center">
+		<h1 class="text-5xl uppercase font-bold">
+			{{ applications.count }} Applications
+		</h1>
+	</div>
+
+	<section>
+		<div class="grid grid-cols-[0.5fr_1.5fr] gap-5">
+			{% include "partials/stats/doughnut.html" with labels=doughnut_labels data=doughnut_data colours=doughnut_colours %}
+			{% include "partials/stats/appl_by_month.html" with labels=bar_labels data=bar_data colours=bar_colours borders=bar_borders %}
+		</div>
+	</section>
+{% endblock %}
