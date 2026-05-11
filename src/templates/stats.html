@@ -5,19 +5,21 @@
 
 {% block html_head %}
 	<script src="{% static 'js/chart.js' %}"></script>
+	<script src="{% static 'js/chartjs-chart-sankey.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-	<div class="m-12 text-center">
-		<h1 class="text-5xl uppercase font-bold">
+	<div class="my-12 text-center">
+		<h1 class="sm:text-4xl md:text-5xl lg:text-5xl uppercase font-bold">
 			{{ applications.count }} Applications
 		</h1>
 	</div>
 
 	<section>
-		<div class="grid grid-cols-[0.5fr_1.5fr] gap-5">
+		<div class="flex flex-wrap gap-5">
 			{% include "partials/stats/doughnut.html" with labels=doughnut_labels data=doughnut_data colours=doughnut_colours %}
 			{% include "partials/stats/appl_by_month.html" with labels=bar_labels data=bar_data colours=bar_colours borders=bar_borders %}
+			{% include "partials/stats/appl_state_tree.html" %}
 		</div>
 	</section>
 {% endblock %}
