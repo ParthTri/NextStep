@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timesince
 from django.views import View
@@ -184,6 +184,18 @@ def ApplicationDelete(request, pk):
     application.delete()
 
     return redirect("dashboard")
+
+
+@login_required(login_url="/signin")
+def TagRemove(request, tag_id: int):
+    if request.method == "POST":
+        application_tag = get_object_or_404(models.ApplicationTag, id=tag_id)
+
+        application_tag.delete()
+
+        return redirect("application", pk=application_tag.application.id)
+    else:
+        raise Http404()
 
 
 class Settings(LoginRequiredMixin, View):
