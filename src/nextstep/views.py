@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -10,6 +11,7 @@ from django.utils import timesince
 from django.views import View
 
 from nextstep import forms, models
+from nextstep.utils import colours
 
 
 # Create your views here.
@@ -232,3 +234,51 @@ class Settings(LoginRequiredMixin, View):
         context["user"] = request.user
 
         return render(request, self.template_name, context)
+
+
+@login_required(login_url="/signin")
+def Stats(request):
+    # Pie chart of applications
+    applications = models.Application.objects.filter(
+        user=request.user
+    ).prefetch_related("tags")
+    density = {}
+    for application in applications:
+        current_tag = application.get_current_tag()
+        if application.get_current_tag() is None:
+            continue
+
+        count = density.get(current_tag, 0)
+        if count == 0:
+            density[current_tag] = 1
+        else:
+            density[current_tag] += 1
+
+    # Bar chart for applications per month
+    month_count = {}
+    for application in applications:
+        date: datetime = application.applied_timestamp
+        if month_count.get(date.strftime("%B"), 0) == 0:
+            month_count[date.strftime("%B")] = 1
+        else:
+            month_count[date.strftime("%B")] += 1
+
+    bar_colours = [colours.generate_dynamic_neobrutal() for i in month_count.values()]
+
+    context = {
+        "applications": applications,
+        "doughnut_labels": list(map(lambda x: x.name, density.keys())),
+        "doughnut_data": list(density.values()),
+        "doughnut_colours": list(map(lambda x: f"#{x.colour}", density.keys())),
+        "bar_labels": list(month_count.keys()),
+        "bar_data": list(month_count.values()),
+        "bar_colours": list(map(lambda x: colours.format_channels(x), bar_colours)),
+        "bar_borders": list(
+            map(
+                lambda x: colours.format_channels(colours.darker_variant(x)),
+                bar_colours,
+            )
+        ),
+    }
+
+    return render(request, "stats.html", context)

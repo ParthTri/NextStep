@@ -6,6 +6,7 @@ from nextstep import views
 #
 urlpatterns = [
     path("", views.Dashboard.as_view(), name="dashboard"),
+    path("stats", views.Stats, name="stats"),
     path("application/<int:pk>", views.ApplicationView.as_view(), name="application"),
     path(
         "application/<int:pk>/update",
