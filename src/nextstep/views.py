@@ -11,10 +11,8 @@ from django.views import View
 
 from nextstep import forms, models
 
+
 # Create your views here.
-
-
-# TODO: Create initial view to signup and create a user
 class LoginView(View):
     template_name = "auth/signin.html"
 
