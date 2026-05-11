@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime
 
@@ -265,6 +266,25 @@ def Stats(request):
 
     bar_colours = [colours.generate_dynamic_neobrutal() for i in month_count.values()]
 
+    flows = {}
+    tag_colors = {tag.name: f"#{tag.colour}" for tag in models.Tag.objects.all()}
+    for app in applications:
+        # Get chronological sequence of tags
+        history = list(
+            app.get_all_tags()
+            .order_by("updated_at")
+            .values_list("tag__name", flat=True)
+        )
+
+        for i in range(len(history) - 1):
+            source = history[i]
+            target = history[i + 1]
+            key = (source, target)
+            flows[key] = flows.get(key, 0) + 1
+
+    # Format for Chart.js Sankey
+    sankey_data = [{"from": k[0], "to": k[1], "flow": v} for k, v in flows.items()]
+
     context = {
         "applications": applications,
         "doughnut_labels": list(map(lambda x: x.name, density.keys())),
@@ -279,6 +299,8 @@ def Stats(request):
                 bar_colours,
             )
         ),
+        "sankey_data_json": json.dumps(sankey_data),
+        "tag_colors_json": json.dumps(tag_colors),
     }
 
     return render(request, "stats.html", context)
