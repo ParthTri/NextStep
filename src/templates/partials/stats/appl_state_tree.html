@@ -1,0 +1,58 @@
+<div>
+	<div
+		class="bg-white p-6 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
+		lg:w-5xl h-52"
+	>
+		<canvas id="appl_state_tree"></canvas>
+	</div>
+
+	<script>
+	const ctx = document.getElementById('appl_state_tree').getContext('2d');
+
+	const sankeyData = {{ sankey_data_json|safe }};
+    const colorMap = {{ tag_colors_json|safe }};
+
+    new Chart(ctx, {
+        type: 'sankey',
+        data: {
+            datasets: [{
+                data: sankeyData,
+                // Map the node colors to your Tag model colors
+                colorFrom: (c) => colorMap[c.dataset.data[c.dataIndex].from] || '#000000',
+                colorTo: (c) => colorMap[c.dataset.data[c.dataIndex].to] || '#000000',
+                colorMode: 'gradient',
+
+                // Styling the Nodes (the vertical bars)
+                labels: Object.fromEntries(Object.keys(colorMap).map(key => [key, key])),
+                priority: colorMap,
+
+                borderWidth: 5,
+                borderColor: 'black',
+                nodeWidth: 25,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'black',
+                    titleFont: { family: 'monospace', size: 14, weight: 'bold' },
+                    bodyFont: { family: 'monospace' },
+                    displayColors: false,
+                    callbacks: {
+                        label: (context) => {
+                            const item = context.dataset.data[context.dataIndex];
+                            return ` ${item.from} → ${item.to}: ${item.flow} Applications`;
+                        }
+                    }
+                }
+            },
+            layout: {
+                padding: { top: 10, bottom: 10, left: 5, right: 5 }
+            }
+        }
+    });
+</script>
+</div>
