@@ -17,12 +17,23 @@
 				></div>
 			</div>
 
-			<div class="timeline-end py-8">
+			<div class="timeline-end py-8 grid grid-cols-2 gap-3">
 				<span
 					class="badge-neo"
 					style="background-color: #{{ tag.tag.colour }}"
 					>{{ tag.tag.name }}</span
 				>
+				<form
+					action="{% url 'tag-remove' tag_id=tag.id %}"
+					method="POST"
+				>
+					{% csrf_token %}
+					<button
+						class=" badge-neo w-fit hover:bg-error hover:cursor-pointer"
+					>
+						<span class="icon-[mdi--bin] size-5"></span>
+					</button>
+				</form>
 			</div>
 			{% if tags.count != forloop.counter %}
 				<hr class="bg-black opacity-100 w-[3px]" />
