@@ -44,6 +44,9 @@ class Application(models.Model):
     def get_current_tag(self) -> Tag | None:
         tags = ApplicationTag.objects.filter(application=self).order_by("-updated_at")
 
+        if tags.first() is None:
+            return None
+
         return tags.first().tag
 
     def get_all_tags(self) -> QuerySet["ApplicationTag"]:
